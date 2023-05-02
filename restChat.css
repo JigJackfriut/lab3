@@ -1,0 +1,34 @@
+/* Some styles for text */
+h2, h3, p {
+    font-family: Verdana, sans-serif;
+}
+
+.small {
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 60%;
+}
+
+/* Text Box attributes */
+.textinput {
+    width: 400px;
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 100%;
+}
+
+/* Scroll Box attributes */
+.scrollabletextbox {
+    background-color: #e6b3ff;
+    height: 400px;
+    width: 850px;
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 100%;
+    overflow:scroll;
+    margin-left: auto;
+  	margin-right: auto;
+}
+
+.footer {
+   position: fixed;
+   bottom: 0;
+   padding-left: 20px;
+}
