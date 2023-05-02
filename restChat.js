@@ -20,6 +20,12 @@ document.getElementById('leave').style.display = 'none';
 document.getElementById('login-btn').addEventListener("click", (e) => {
 	join();
 })
+
+// function to register user
+document.getElementById('register-btn').addEventListener("click", (e) => {
+	registerUser();
+})
+
 // Action if they push the leave button
 document.getElementById('leave-btn').addEventListener("click", (e) => {
 	leaveSession();
@@ -34,6 +40,8 @@ document.getElementById('message').addEventListener("keydown", (e)=> {
     	return false;
     }   
 });
+
+
 
 // Call function on page exit
 window.onbeforeunload = leaveSession;
@@ -212,4 +220,46 @@ function completeLogout(user) {
 	removeUser(user);
 }
 
+// I wrote code for registration
+
+// Get the register form and submit button
+const registerForm = document.querySelector('#loginModal form');
+const submitButton = document.querySelector('#loginModal .modal-footer button.btn-primary');
+
+// Add event listener to the submit button
+submitButton.addEventListener('click', function(event) {
+  event.preventDefault(); // prevent form from submitting normally
+  
+  // Get the input values
+  const name = registerForm.querySelector('#orangeForm-name').value;
+  const email = registerForm.querySelector('#orangeForm-email').value;
+  const password = registerForm.querySelector('#orangeForm-pass').value;
+  
+  // Do some basic client-side validation
+  if (!name || !email || !password) {
+    alert('Please fill in all fields');
+    return;
+  }
+  
+  // Send the registration data to the server
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/register');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      alert('Registration successful!');
+      // Optionally, you can redirect the user to a new page here
+    } else {
+      alert('Registration failed');
+    }
+  };
+  xhr.send(JSON.stringify({ name, email, password }));
+  
+  // Close the modal
+  const modal = bootstrap.Modal.getInstance(document.querySelector('#loginModal'));
+  modal.hide();
+  
+  // Clear the form inputs
+  registerForm.reset();
+});
 
