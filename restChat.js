@@ -222,44 +222,33 @@ function completeLogout(user) {
 
 // I wrote code for registration
 
-// Get the register form and submit button
-const registerForm = document.querySelector('#loginModal form');
-const submitButton = document.querySelector('#loginModal .modal-footer button.btn-primary');
-
-// Add event listener to the submit button
-submitButton.addEventListener('click', function(event) {
-  event.preventDefault(); // prevent form from submitting normally
+// Define a function to handle registration form submission
+function registerUser() {
+  // Get the form input values
+  const name = document.getElementById("orangeForm-name").value;
+  const email = document.getElementById("orangeForm-email").value;
+  const password = document.getElementById("orangeForm-pass").value;
   
-  // Get the input values
-  const name = registerForm.querySelector('#orangeForm-name').value;
-  const email = registerForm.querySelector('#orangeForm-email').value;
-  const password = registerForm.querySelector('#orangeForm-pass').value;
-  
-  // Do some basic client-side validation
+  // Validate the input
   if (!name || !email || !password) {
-    alert('Please fill in all fields');
+    alert("Please fill out all fields");
     return;
   }
   
   // Send the registration data to the server
   const xhr = new XMLHttpRequest();
-  xhr.open('POST', '/register');
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.onload = function() {
+  xhr.open("POST", "/register");
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.onload = () => {
     if (xhr.status === 200) {
-      alert('Registration successful!');
-      // Optionally, you can redirect the user to a new page here
+      alert("Registration successful!");
     } else {
-      alert('Registration failed');
+      alert("Registration failed");
     }
   };
   xhr.send(JSON.stringify({ name, email, password }));
-  
-  // Close the modal
-  const modal = bootstrap.Modal.getInstance(document.querySelector('#loginModal'));
-  modal.hide();
-  
-  // Clear the form inputs
-  registerForm.reset();
-});
+}
 
+// Attach the registerUser function to the form submit button
+const submitButton = document.getElementById("saveChangesButton");
+submitButton.addEventListener("click", registerUser);
