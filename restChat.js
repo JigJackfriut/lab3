@@ -15,16 +15,6 @@ document.getElementById('chatinput').style.display = 'none';
 document.getElementById('status').style.display = 'none';
 document.getElementById('leave').style.display = 'none';
 
-/* Set up buttons */
-// Action if they push the join button
-document.getElementById('login-btn').addEventListener("click", (e) => {
-	join();
-})
-
-// function to register user
-document.getElementById('register-btn').addEventListener("click", (e) => {
-	registerUser();
-})
 
 // Action if they push the leave button
 document.getElementById('leave-btn').addEventListener("click", (e) => {
@@ -47,29 +37,7 @@ document.getElementById('message').addEventListener("keydown", (e)=> {
 window.onbeforeunload = leaveSession;
 
 /* Join processes */
-function join() {
-	myname = document.getElementById('yourname').value;
-	fetch(baseUrl+'/chat/join/'+myname, {
-        method: 'get'
-    })
-    .then (response => response.json() )
-    .then (data => completeJoin(data))
-    .catch(error => {
-        {alert("Error: Something went wrong:"+error);}
-    })
-}
-
-function completeJoin(results) {
-	var user = results['user'];
-	if (currentUsers.includes(user) == true){
-		alert("Username already exists!");
-		leaveSession();
-		return;
-	}
-	console.log("Join:"+user);
-	startSession(user);
-	logUser(user);
-}
+funct
 
 /* Log users (only on client side right now) */
 function logUser(user) {
@@ -94,32 +62,9 @@ function removeUser(user) {
 }
 
 /* Register Users */
-function registerUser() {
-	username = document.getElementById('register-name');
-	email = document.getElementById('register-email');
-	password = document.getElementById('register-password');
-	fetch(baseUrl+'/chat/join/'+username+'/'+email+'/'+password, {
-		method: 'get'
-	})
-	.then (response => response.json())
-	.then (data => completeRegisterUser(data))
-	.catch(error => {
-		{alert("Error: Something went wrong:"+error);}
-	})
-}
 
-function completeRegisterUser(results) {
-	var status = results['status'];
-	if (status != "success") {
-		alert("Username or email already exists!");
-		leaveSession();
-		return;
-	}
-	var user = results['user'];
-	console.log("Register:"+user);
-	startSession(user);
-	logUsers(user);
-}
+
+
 
 function completeSend(results) {
 	var status = results['status'];
@@ -219,3 +164,90 @@ function logout() {
 function completeLogout(user) {
 	removeUser(user);
 }
+
+
+// I wrote code for registration
+
+// Define a function to handle registration form submission
+function registerUser() {
+  // Get the form input values
+  const name = document.getElementById("orangeForm-name").value;
+  const email = document.getElementById("orangeForm-email").value;
+  const password = document.getElementById("orangeForm-pass").value;
+  
+  // Validate the input
+  if (!name || !email || !password) {
+    alert("Please fill out all fields");
+    return;
+  } else if (password.length < 6) {
+    alert("Password must be at least 6 characters long");
+    return;
+  } else if (checkIfUsernameExists(name)) {
+    alert("Username already exists");
+    return;
+  } else {
+    // Save user credentials to localStorage
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    users.push({ name, password });
+    localStorage.setItem("users", JSON.stringify(users));
+    
+    alert("Registration successful!");
+	  console.log("Register:"+name);
+	startSession(name);
+	logUsers(name);
+  }
+}
+
+function checkIfUsernameExists(username) {
+  // Check if username exists in localStorage
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  return users.some(user => user.name === username);
+}
+
+// Attach the registerUser function to the form submit button
+const submitButton = document.getElementById("saveChangesButton");
+submitButton.addEventListener("click", registerUser);
+
+
+
+
+
+
+
+
+
+// login button stuff
+
+function loginUser() {
+  // Get the form input values
+  const password = document.getElementById("yourpass").value;
+  const username = document.getElementById("yourname").value;
+  
+  // Check if username and password are valid
+  if (!username || !password) {
+    alert("Please enter both username and password");
+    return;
+  } else if (!checkIfUsernameExists(username)) {
+    alert("Username not found");
+    return;
+  }
+  
+  // Check if username and password match
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const currentUser = users.find(user => user.name === username);
+  if (currentUser.password !== password) {
+    alert("Incorrect password");
+    return;
+  }
+  
+  // Login successful
+  alert("Login successful!");
+ console.log(user+"joined");
+  startSession(user);
+  logUser(user);
+  // You can redirect to a different page or perform any other action here
+}
+
+const submitButton = document.getElementById("login-btn");
+loginButton.addEventListener("click",loginUser);
+
