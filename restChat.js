@@ -248,6 +248,6 @@ function loginUser() {
   // You can redirect to a different page or perform any other action here
 }
 
-const submitButton = document.getElementById("login-btn");
+const loginButton = document.getElementById("login-btn");
 loginButton.addEventListener("click",loginUser);
 
