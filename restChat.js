@@ -233,20 +233,26 @@ function registerUser() {
   if (!name || !email || !password) {
     alert("Please fill out all fields");
     return;
+  } else if (password.length < 6) {
+    alert("Password must be at least 6 characters long");
+    return;
+  } else if (checkIfUsernameExists(name)) {
+    alert("Username already exists");
+    return;
+  } else {
+    // Save user credentials to localStorage
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    users.push({ name, password });
+    localStorage.setItem("users", JSON.stringify(users));
+    
+    alert("Registration successful!");
   }
-  
-  // Send the registration data to the server
-  const xhr = new XMLHttpRequest();
-  xhr.open("POST", "/register");
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.onload = () => {
-    if (xhr.status === 200) {
-      alert("Registration successful!");
-    } else {
-      alert("Registration failed");
-    }
-  };
-  xhr.send(JSON.stringify({ name, email, password }));
+}
+
+function checkIfUsernameExists(username) {
+  // Check if username exists in localStorage
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  return users.some(user => user.name === username);
 }
 
 // Attach the registerUser function to the form submit button
