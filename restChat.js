@@ -170,23 +170,16 @@ function registerUser() {
     fetch(baseUrl+'/chat/register/'+myname+'/'+myemail+'/'+mypass, {
       method: 'get'
     })
-    .then(response => {
-      if (!response.ok) {
-        // Handle errors
-        response.json().then(json => {
-          // Extract error message from JSON response
-          const errorMessage = json.error;
-          // Display error message in your website
-          alert(errorMessage);
-        });
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        // Registration failed due to duplicate username
+        alert(data.error);
       } else {
-        // Handle successful response
-        response.json().then(json => {
-          // Process JSON response
-          alert("Registration successful!");
-          myname = json.user;
-          startsession(myname);
-        });
+        // Registration successful
+        alert(data.message);
+        myname = name;
+        startsession(name);
       }
     })
     .catch(error => {
@@ -201,6 +194,8 @@ function registerUser() {
 // Attach the registerUser function to the form submit button
 const submitButton = document.getElementById("saveChangesButton");
 submitButton.addEventListener("click", registerUser);
+
+// login stuff
 
 
 
