@@ -153,26 +153,17 @@ function registerUser() {
   const email = document.getElementById("orangeForm-email").value;
   const password = document.getElementById("orangeForm-pass").value;
 
-  // Validate the input
-  if (!name || !email || !password) {
-    alert("Please fill out all fields");
-    return;
-  } else if (password.length < 6) {
-    alert("Password must be at least 6 characters long");
-    return;
-  } else {
-    // Save user credentials to localStorage
+  
     fetch(baseUrl+'/chat/register/'+name+'/'+email+'/'+password, {
         method: 'get'
     })
     .then (response => response.json() )
+    .then (name => startsession(name) )
     .catch(error => {
         {console.log("Server appears down");}
     })  
 
-    alert("Registration successful!");
-	  myname=name;
-	  startsession(name);
+	  
   }
 }
 
