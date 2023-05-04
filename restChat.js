@@ -178,7 +178,7 @@ function registerUser() {
   } else {
     // Registration successful
     alert(data.message);
-    startsession(myname);
+    startSession(myname);
   }
 })
 .catch(error => {
