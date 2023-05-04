@@ -67,8 +67,7 @@ int main(void) {
 	} else {
 		addMessage(username,message,messageMap);
 		resultMessage = "{\"status\":\"success\"}";
-		addUsers(username,messageMap,userList);
-		resultUser = "{\"status\":\"success\"}";
+		
 	}
     res.set_content(resultMessage, "text/json");
     res.set_content(resultUser, "text/json");
@@ -79,8 +78,7 @@ int main(void) {
     res.set_header("Access-Control-Allow-Origin","*");
     string resultMessageJSON = getMessagesJSON(username,messageMap);
     res.set_content(resultMessageJSON, "text/json");
-    string resultUsersJSON = getUsersJSON(username,userList);
-    res.set_content(resultUsersJSON, "text/json");
+ 
   });
   
   cout << "Server listening on port " << port << endl;
