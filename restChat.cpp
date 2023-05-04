@@ -59,8 +59,10 @@ int main(void) {
     res.set_content("Chat API", "text/plain");
   });
 
-svr.Get(R"(/chat/register/(\w+)/(\w+)/(\w+))", [&](const Request& req, Response& res) {
+svr.Get(R"(/chat/register/(.*)/(.*)/(.*))", [&](const Request& req, Response& res) {
     // Extract the name, email, and password from the request URL
+    res.set_header("Access-Control-Allow-Origin","*");
+    cout<<"hello";
     std::string name = req.matches[1];
     std::string email = req.matches[2];
     std::string password = req.matches[3];
