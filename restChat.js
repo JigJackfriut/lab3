@@ -5,6 +5,8 @@
 var baseUrl = 'http://54.198.38.17:5005';
 var state="off";
 var myname="";
+var mypass="";
+var myemail="";
 var inthandle;
 var inthandleUsers;
 var currentUsers = [];
@@ -161,8 +163,11 @@ function registerUser() {
     alert("Password must be at least 6 characters long");
     return;
   } else {
+	  myname=name;
+	  myemail=email;
+	  mypass=password;
     // Send user credentials to server for registration
-    fetch(baseUrl+'/chat/register/'+name+'/'+email+'/'+password, {
+    fetch(baseUrl+'/chat/register/'+myname+'/'+myemail+'/'+mypass, {
       method: 'get'
     })
     .then(response => {
