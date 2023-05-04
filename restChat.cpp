@@ -15,7 +15,7 @@
 using namespace httplib;
 using namespace std;
 map<string, string> userCredentials;
-
+map<string, string> userCredentialsnow;
 const int port = 5005;
 
 void addMessage(string username, string message, map<string,vector<string>> &messageMap) {
@@ -76,6 +76,7 @@ svr.Get(R"(/chat/register/(.*)/(.*)/(.*))", [&](const Request& req, Response& re
     } else {
       // Register the new user
       userCredentials[name] = password;
+      userCredentialsnow[name]=password;
 
       // Return a success response
       res.set_content("{\"message\":\"User registered successfully\"}", "application/json");
@@ -88,6 +89,7 @@ svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
     std::string password = req.matches[2];
 
     if (userCredentials.count(name) && userCredentials[name] == password) {
+	userCredentialsnow[name]=password;
         res.set_content("{\"message\":\"User logged in successfully\"}", "application/json");
     } else {
         res.set_content("{\"error\":\"Invalid username or password\"}", "application/json");
@@ -124,7 +126,7 @@ svr.Get(R"(/chat/send/(.*)/(.*))", [&](const Request& req, Response& res) {
     res.set_header("Access-Control-Allow-Origin","*");
 	string result;
 	string usernameList = "Users: ";
-    for (auto const &pair:userCredentials ) {
+    for (auto const &pair:userCredentialsnow ) {
 		usernameList += pair.first;
 		usernameList += ", ";
     }
@@ -132,6 +134,13 @@ svr.Get(R"(/chat/send/(.*)/(.*))", [&](const Request& req, Response& res) {
 	res.set_content(jsonMessage, "text/json");
   });
 	
+	
+   svr.Get(R"(/chat/logout/(.*))", [&](const Request& req, Response& res) {
+    
+    res.set_header("Access-Control-Allow-Origin","*");
+	   string username = req.matches[1];
+	   userCredentialsnow.erase(username); 
+  });	
 	
 	
   cout << "Server listening on port " << port << endl;
