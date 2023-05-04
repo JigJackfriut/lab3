@@ -199,6 +199,3 @@ submitButton.addEventListener("click", registerUser);
 
 
 
-
-const loginButton = document.getElementById("saveChangesButton");
-loginButton.addEventListener("click", registerUser);
