@@ -222,8 +222,8 @@ function loginUser() {
     .then(response => response.json())
     .then(data => {
       if (data.error) {
-        // Registration failed due to duplicate username
-        alert(data.error);
+         alert(data.error);
+	     return;
       } else {
         // Registration successful
         alert(data.message);
