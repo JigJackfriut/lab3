@@ -61,7 +61,55 @@ function removeUser(user) {
 	};
 }
 
+
+function checkIfUsernameExists(username) {
+  // Check if username exists in localStorage
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  return users.some(user => user.name === username);
+}
+
+// Attach the registerUser function to the form submit button
+const submitButton = document.getElementById("saveChangesButton");
+submitButton.addEventListener("click", registerUser);
+
+
+
+
+
 /* Register Users */
+function registerUser() {
+	const name = document.getElementById("orangeForm-name").value;
+  const email = document.getElementById("orangeForm-email").value;
+  const password = document.getElementById("orangeForm-pass").value;
+  
+  // Validate the input
+  if (!name || !email || !password) {
+    alert("Please fill out all fields");
+    return;
+  } else if (password.length < 6) {
+    alert("Password must be at least 6 characters long");
+    return;
+  } else if (checkIfUsernameExists(name)) {
+    alert("Username already exists");
+    return;
+  } else {
+    // Save user credentials to localStorage
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    users.push({ name, password });
+    localStorage.setItem("users", JSON.stringify(users));
+    
+    alert("Registration successful!");
+	 
+	
+	fetch(baseUrl+'/chat/join/'+username+'/'+email+'/'+password, {
+		method: 'get'
+	})
+	.then (response => response.json())
+	.then (data => completeRegisterUser(data))
+	.catch(error => {
+		{alert("Error: Something went wrong:"+error);}
+	})
+}
 
 
 
@@ -169,34 +217,7 @@ function completeLogout(user) {
 // I wrote code for registration
 
 // Define a function to handle registration form submission
-function registerUser() {
-  // Get the form input values
-  const name = document.getElementById("orangeForm-name").value;
-  const email = document.getElementById("orangeForm-email").value;
-  const password = document.getElementById("orangeForm-pass").value;
-  
-  // Validate the input
-  if (!name || !email || !password) {
-    alert("Please fill out all fields");
-    return;
-  } else if (password.length < 6) {
-    alert("Password must be at least 6 characters long");
-    return;
-  } else if (checkIfUsernameExists(name)) {
-    alert("Username already exists");
-    return;
-  } else {
-    // Save user credentials to localStorage
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    users.push({ name, password });
-    localStorage.setItem("users", JSON.stringify(users));
-    
-    alert("Registration successful!");
-	  console.log("Register:"+name);
-	startSession(name);
-	logUsers(name);
-  }
-}
+
 
 function checkIfUsernameExists(username) {
   // Check if username exists in localStorage
@@ -215,39 +236,4 @@ submitButton.addEventListener("click", registerUser);
 
 
 
-
-// login button stuff
-
-function loginUser() {
-  // Get the form input values
-  const password = document.getElementById("yourpass").value;
-  const username = document.getElementById("yourname").value;
-  
-  // Check if username and password are valid
-  if (!username || !password) {
-    alert("Please enter both username and password");
-    return;
-  } else if (!checkIfUsernameExists(username)) {
-    alert("Username not found");
-    return;
-  }
-  
-  // Check if username and password match
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-  const currentUser = users.find(user => user.name === username);
-  if (currentUser.password !== password) {
-    alert("Incorrect password");
-    return;
-  }
-  
-  // Login successful
-  alert("Login successful!");
- console.log(user+"joined");
-  startSession(user);
-  logUser(user);
-  // You can redirect to a different page or perform any other action here
-}
-
-const loginButton = document.getElementById("login-btn");
-loginButton.addEventListener("click",loginUser);
 
