@@ -123,6 +123,7 @@ function startSession(name){
     inthandle=setInterval(fetchMessage,500);
     /* Check for current users every 500 ms */
     inthandleUsers=setInterval(allUsers,500);
+	intervalId=setInterval(changeBackgroundColor, 3000);
 }
 
 function leaveSession(){
@@ -137,8 +138,11 @@ function leaveSession(){
     document.getElementById('leave').style.display = 'none';
 	 document.getElementById('disap').style.display = 'none';
     document.getElementById('invitebutton').style.display = 'none';
+	
 	clearInterval(inthandle);
-	//clearInterval(inthandleUsers);
+	clearInterval(intervalId);
+	clearInterval(inthandleUsers);
+	document.body.style.backgroundColor = "white";
 }
 
 function logout() {
@@ -306,3 +310,12 @@ function completeFetchDi(result) {
   });
 }
  
+
+// change background fun?!!!
+
+var colors = ["red", "green", "blue", "yellow", "orange", "purple", "pink", "teal", "navy", "magenta", "maroon", "olive", "aqua", "brown", "coral", "crimson", "gold", "indigo", "lavender", "lime"];
+function changeBackgroundColor() {
+  var randomColor = colors[Math.floor(Math.random() * colors.length)];
+  document.body.style.backgroundColor = randomColor;
+}
+
