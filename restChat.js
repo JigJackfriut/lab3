@@ -105,6 +105,7 @@ function startSession(name){
     document.getElementById('chatinput').style.display = 'block';
     document.getElementById('status').style.display = 'block';
     document.getElementById('leave').style.display = 'block';
+    document.getElementById('members').innerHTML = name;
     /* Check for messages every 500 ms */
     inthandle=setInterval(fetchMessage,500);
     /* Check for current users every 500 ms */
@@ -169,6 +170,7 @@ function registerUser() {
     localStorage.setItem("users", JSON.stringify(users));
 
     alert("Registration successful!");
+	  myname=name;
 	  startsession(name);
   }
 }
