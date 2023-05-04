@@ -169,6 +169,7 @@ function registerUser() {
     localStorage.setItem("users", JSON.stringify(users));
 
     alert("Registration successful!");
+	  startsession(name);
   }
 }
 
