@@ -99,7 +99,7 @@ function fetchMessage() {
 
 // update user!!!!!!!
 function updateUsers(){
-	fetch(baseUrl+'/chat/fetch/list, {
+	fetch(baseUrl+'/chat/fetch/list' , {
         method: 'get'
     })
     .then(response => response.json())
