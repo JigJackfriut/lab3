@@ -40,31 +40,6 @@ string getMessagesJSON(string username, map<string,vector<string>> &messageMap) 
 	return result;
 }
 
-// My function to get list of users
-void addUsers(string username, map<string,vector<string>> &messageMap, vector<string> userList) {
-	// Create a json list of current users
-	string jsonUser = "{\"user\":\""+username+"\"}";
-	for (auto userMessagePair : messageMap) {
-		username = userMessagePair.first;
-		userList[username].push_back(jsonUser);
-	}
-}
-
-// Return a json list of user 
-string getUsersJSON(string username, vector<string> &userList) {
-	/* retrieve json list of users */
-	bool first = true;
-	string result = "{\"user\":[";
-	for (string user :  userList[username]) {
-		if (not first) result += ",";
-		result += user;
-		first = false;
-	}
-	result += "]}";
-	userList[username].clear();
-	return result;
-}
-
 int main(void) {
   Server svr;
   int nextUser=0;
@@ -78,28 +53,7 @@ int main(void) {
   });
 
 
-  svr.Get(R"(/chat/join/(.*))", [&](const Request& req, Response& res) {
-    res.set_header("Access-Control-Allow-Origin","*");
-    string username = req.matches[1];
-    string resultMessage;
-    string resultUser;
-    vector<string> empty;
-    cout << username << " joins" << endl;
-    
-    // Check if user with this name exists
-    if (messageMap.count(username)) {
-    	resultUser = "{\"status\":\"exists\"}";
-    } else {
-    	// Add user to messages map
-    	messageMap[username]=empty;
-    	resultMessage = "{\"status\":\"success\",\"user\":\"" + username + "\"}";
-    	// Add user to user list
-    	userList[username]=empty;
-    	resultUser = "{\"status\":\"success\",\"user\":\"" + username + "\"}";
-    }
-    res.set_content(resultMessage, "text/json");
-    res.set_content(resultUser, "text/json");
-  });
+  
 
    svr.Get(R"(/chat/send/(.*)/(.*))", [&](const Request& req, Response& res) {
     res.set_header("Access-Control-Allow-Origin","*");
