@@ -96,15 +96,14 @@ function fetchMessage() {
     })  	
 }
 
-
-// update user!!!!!!!
+//update users!!!!!!!!
 function updateUsers(){
-	fetch(baseUrl+'/chat/fetch/list' , {
+    fetch(baseUrl+'/chat/fetch/list' , {
         method: 'get'
     })
     .then(response => response.json())
     .then(data => {
-        const users = JSON.parse(data);
+        const users = data.users;
         const membersDiv = document.getElementById("members");
         membersDiv.innerHTML = "";
         users.forEach(user => {
