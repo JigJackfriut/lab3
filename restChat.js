@@ -59,9 +59,7 @@ function sendText() {
     })
     .then (response => response.json() )
     .then (data => completeSend(data))
-    .catch(error => {
-        {alert("Error: Something went wrong:"+error);}
-    })    
+      
 	document.getElementById('message').value = "";
 }
 
