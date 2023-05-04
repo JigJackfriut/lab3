@@ -97,6 +97,28 @@ function fetchMessage() {
 }
 
 
+// update user!!!!!!!
+function updateUsers(){
+	fetch(baseUrl+'/chat/fetch/list, {
+        method: 'get'
+    })
+    .then(response => response.json())
+    .then(data => {
+        const users = JSON.parse(data);
+        const membersDiv = document.getElementById("members");
+        membersDiv.innerHTML = "";
+        users.forEach(user => {
+            const userDiv = document.createElement("div");
+            userDiv.innerText = user;
+            membersDiv.appendChild(userDiv);
+        });
+    })
+    .catch(error => {
+        console.log("Server appears down");
+    });
+}
+
+
 
 /* Functions to set up visibility of sections of the display */
 function startSession(name){
@@ -111,7 +133,7 @@ function startSession(name){
     /* Check for messages every 500 ms */
     inthandle=setInterval(fetchMessage,500);
     /* Check for current users every 500 ms */
-    //inthandleUsers=setInterval(updateUsers,500);
+    inthandleUsers=setInterval(updateUsers,500);
 }
 
 function leaveSession(){
