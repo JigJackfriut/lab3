@@ -45,33 +45,6 @@ string getMessagesJSON(string username, map<string,vector<string>> &messageMap) 
 
 
 
-void handle_register(const Request& req, Response& res) {
-  // Extract the user credentials from the request URL parameters
-  string name = req.get_param_value("name");
-  string email = req.get_param_value("email");
-  string password = req.get_param_value("password");
-
-  // Validate the user credentials
-  if (name.empty() || email.empty() || password.empty()) {
-    res.status = 400;
-    res.set_content("{\"error\":\"Please fill out all fields\"}", "application/json");
-    return;
-  } else if (credentials.count(email) > 0) {
-    res.status = 400;
-    res.set_content("{\"error\":\"Email address already registered\"}", "application/json");
-    return;
-  } else if (password.length() < 6) {
-    res.status = 400;
-    res.set_content("{\"error\":\"Password must be at least 6 characters long\"}", "application/json");
-    return;
-  }
-
-  // Store the user credentials in memory
-  credentials[email] = password;
-
-  // Send the response
-  res.set_content("{\"status\":\"success\"}", "application/json");
-}
 
 
 int main(void) {
@@ -86,9 +59,23 @@ int main(void) {
     res.set_content("Chat API", "text/plain");
   });
 
+svr.Get(R"(/chat/register/(\w+)/(\w+)/(\w+))", [&](const Request& req, Response& res) {
+    // Extract the name, email, and password from the request URL
+    std::string name = req.matches[1];
+    std::string email = req.matches[2];
+    std::string password = req.matches[3];
 
-  svr.Get("/chat/register/:name/:email/:password", [&](const Request& req, Response& res) {
-    handle_register(req, res);
+    // Check if the username is already taken
+    if (userCredentials.count(name)) {
+      // Return an error response
+      res.set_content("{\"error\":\"Username already taken\"}", "application/json");
+    } else {
+      // Register the new user
+      userCredentials[name] = password;
+
+      // Return a success response
+      res.set_content("{\"message\":\"User registered successfully\"}", "application/json");
+    }
   });
 
    svr.Get(R"(/chat/send/(.*)/(.*))", [&](const Request& req, Response& res) {
