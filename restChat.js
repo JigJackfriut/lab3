@@ -96,26 +96,7 @@ function fetchMessage() {
     })  	
 }
 
-//update users!!!!!!!!
-function updateUsers(){
-    fetch(baseUrl+'/chat/fetch/list' , {
-        method: 'get'
-    })
-    .then(response => response.json())
-    .then(data => {
-        const users = data.users;
-        const membersDiv = document.getElementById("members");
-        membersDiv.innerHTML = "";
-        users.forEach(user => {
-            const userDiv = document.createElement("div");
-            userDiv.innerText = user;
-            membersDiv.appendChild(userDiv);
-        });
-    })
-    .catch(error => {
-        console.log("Server appears down");
-    });
-}
+
 
 
 
@@ -132,7 +113,7 @@ function startSession(name){
     /* Check for messages every 500 ms */
     inthandle=setInterval(fetchMessage,500);
     /* Check for current users every 500 ms */
-    inthandleUsers=setInterval(updateUsers,500);
+    inthandleUsers=setInterval(allUsers,500);
 }
 
 function leaveSession(){
@@ -259,3 +240,27 @@ function loginUser() {
 
 const loginButton = document.getElementById("login-btn");
 loginButton.addEventListener("click", loginUser);
+
+
+
+
+
+
+
+
+
+function allUsers() {
+	fetch(baseUrl+'/chat/list', {
+        method: 'get'
+    })
+    .then (response => response.json() )
+    .then (data =>updateUsers(data))
+    .catch(error => {
+        {alert("Error: Something went wrong:"+error);}
+    })
+}
+function updateUsers(result) {
+	userList = result["userList"];
+	//console.log("user list printed");
+	document.getElementById('members').innerHTML = userList;
+}
