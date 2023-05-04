@@ -82,46 +82,35 @@ svr.Get(R"(/chat/register/(.*)/(.*)/(.*))", [&](const Request& req, Response& re
     }
   });
 	
-//code for login!!!!!!!!!!!!!!!!
-	svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
-    // Extract the name, email, and password from the request URL
+svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
     res.set_header("Access-Control-Allow-Origin","*");
-    cout<<"hello";
     std::string name = req.matches[1];
     std::string password = req.matches[2];
 
-    // Check if the username is already taken
     if (userCredentials.count(name) && userCredentials[name] == password) {
-      // Return an error response
-      res.set_content("{\"message\":\"User logined successfully\"}", "application/json");
+        res.set_content("{\"message\":\"User logged in successfully\"}", "application/json");
     } else {
-      // Register the new user
-      userCredentials[name] = password;
-
-      // Return a success response
-      res.set_content("{\"error\":\"Username already taken\"}", "application/json");
+        res.set_content("{\"error\":\"Invalid username or password\"}", "application/json");
     }
-  });
-
+});
 	
 
-   svr.Get(R"(/chat/send/(.*)/(.*))", [&](const Request& req, Response& res) {
+ // Send message endpoint
+svr.Get(R"(/chat/send/(.*)/(.*))", [&](const Request& req, Response& res) {
     res.set_header("Access-Control-Allow-Origin","*");
-	string username = req.matches[1];
-	string message = req.matches[2];
-	string resultMessage; 
-	string resultUser; 
-	
-    if (!messageMap.count(username)) {
-    	resultUser = "{\"status\":\"baduser\"}";
-	} else {
-		addMessage(username,message,messageMap);
-		resultMessage = "{\"status\":\"success\"}";
-		
-	}
-    res.set_content(resultMessage, "text/json");
-    res.set_content(resultUser, "text/json");
-  });
+    string username = req.matches[1];
+    string message = req.matches[2];
+    string resultMessage;
+
+    if (!userCredentials.count(username)) {
+        resultMessage = "{\"status\":\"baduser\"}";
+    } else {
+        addMessage(username, message, messageMap);
+        resultMessage = "{\"status\":\"success\"}";
+    }
+
+    res.set_content(resultMessage + ",\"user\":\"" + username + "\"}", "application/json");
+});
   
    svr.Get(R"(/chat/fetch/(.*))", [&](const Request& req, Response& res) {
     string username = req.matches[1];
