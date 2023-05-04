@@ -16,6 +16,8 @@ var masterUsers = [];
 document.getElementById('chatinput').style.display = 'none';
 document.getElementById('status').style.display = 'none';
 document.getElementById('leave').style.display = 'none';
+document.getElementById('disap').style.display = 'none';
+document.getElementById('invitebutton').style.display = 'none';
 
 
 // Action if they push the leave button
@@ -115,6 +117,8 @@ function startSession(name){
     document.getElementById('status').style.display = 'block';
     document.getElementById('leave').style.display = 'block';
     document.getElementById('members').innerHTML = name;
+    document.getElementById('disap').style.display = 'block';
+    document.getElementById('invitebutton').style.display = 'block';
     /* Check for messages every 500 ms */
     inthandle=setInterval(fetchMessage,500);
     /* Check for current users every 500 ms */
@@ -287,7 +291,7 @@ function completeFetchDi(result) {
     // Set a timeout to remove the message after 30 seconds
     setTimeout(function() {
       messageElement.remove();
-    }, 10000);
+    }, 5000);
   });
 
   // Users
