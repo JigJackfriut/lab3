@@ -36,81 +36,6 @@ document.getElementById('message').addEventListener("keydown", (e)=> {
 // Call function on page exit
 window.onbeforeunload = leaveSession;
 
-/* Join processes */
-funct
-
-/* Log users (only on client side right now) */
-function logUser(user) {
-	if (currentUsers.includes(user) == false) {
-		currentUsers.push(user);
-	};
-	for (var i = 0; i < currentUsers.length; i++) {
-  		document.getElementById("members").innerHTML += (i+1) + ": " + currentUsers[i] + " ";
-	};
-}
-
-function removeUser(user) {
-	for (var i = 0; i < currentUsers.length; i++) {
-		if (user == currentUsers[i]){
-			currentUsers.splice(i,1);
-		}
-	};
-	document.getElementById("members").innerHTML = " ";
-	for (var i = 0; i < currentUsers.length; i++) {
-  		document.getElementById("members").innerHTML += (i+1) + ": " + currentUsers[i] + " ";
-	};
-}
-
-
-function checkIfUsernameExists(username) {
-  // Check if username exists in localStorage
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-  return users.some(user => user.name === username);
-}
-
-// Attach the registerUser function to the form submit button
-const submitButton = document.getElementById("saveChangesButton");
-submitButton.addEventListener("click", registerUser);
-
-
-
-
-
-/* Register Users */
-function registerUser() {
-	const name = document.getElementById("orangeForm-name").value;
-  const email = document.getElementById("orangeForm-email").value;
-  const password = document.getElementById("orangeForm-pass").value;
-  
-  // Validate the input
-  if (!name || !email || !password) {
-    alert("Please fill out all fields");
-    return;
-  } else if (password.length < 6) {
-    alert("Password must be at least 6 characters long");
-    return;
-  } else if (checkIfUsernameExists(name)) {
-    alert("Username already exists");
-    return;
-  } else {
-    // Save user credentials to localStorage
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    users.push({ name, password });
-    localStorage.setItem("users", JSON.stringify(users));
-    
-    alert("Registration successful!");
-	 
-	
-	fetch(baseUrl+'/chat/join/'+username+'/'+email+'/'+password, {
-		method: 'get'
-	})
-	.then (response => response.json())
-	.then (data => completeRegisterUser(data))
-	.catch(error => {
-		{alert("Error: Something went wrong:"+error);}
-	})
-}
-
 
 
 
@@ -169,6 +94,8 @@ function fetchMessage() {
     })  	
 }
 
+
+
 /* Functions to set up visibility of sections of the display */
 function startSession(name){
     state="on";
@@ -219,6 +146,32 @@ function completeLogout(user) {
 // Define a function to handle registration form submission
 
 
+function registerUser() { 
+  // Get the form input values
+  const name = document.getElementById("orangeForm-name").value;
+  const email = document.getElementById("orangeForm-email").value;
+  const password = document.getElementById("orangeForm-pass").value;
+
+  // Validate the input
+  if (!name || !email || !password) {
+    alert("Please fill out all fields");
+    return;
+  } else if (password.length < 6) {
+    alert("Password must be at least 6 characters long");
+    return;
+  } else if (checkIfUsernameExists(name)) {
+    alert("Username already exists");
+    return;
+  } else {
+    // Save user credentials to localStorage
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    users.push({ name, password });
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("Registration successful!");
+  }
+}
+
 function checkIfUsernameExists(username) {
   // Check if username exists in localStorage
   const users = JSON.parse(localStorage.getItem("users")) || [];
@@ -228,8 +181,6 @@ function checkIfUsernameExists(username) {
 // Attach the registerUser function to the form submit button
 const submitButton = document.getElementById("saveChangesButton");
 submitButton.addEventListener("click", registerUser);
-
-
 
 
 
