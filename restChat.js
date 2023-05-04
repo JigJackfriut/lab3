@@ -199,6 +199,42 @@ submitButton.addEventListener("click", registerUser);
 
 
 
+function loginUser() { 
+  // Get the form input values
+  const name = document.getElementById("yourname").value;
+  const password = document.getElementById("yourpass").value;
 
+  // Validate the input
+  if (!name || !password) {
+    alert("Please fill out all fields");
+    return;
+  } else if (password.length < 6) {
+    alert("Password must be at least 6 characters long");
+    return;
+  } else {
+    myname = name;
+    mypass = password;
 
+    // Send user credentials to server for registration
+    fetch(baseUrl+'/chat/login/'+myname+'/'+mypass, {
+      method: 'get'
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        // Registration failed due to duplicate username
+        alert(data.error);
+      } else {
+        // Registration successful
+        alert(data.message);
+        startSession(myname);
+      }
+    })
+    .catch(error => {
+      console.log("Server appears down");
+    });
+  }
+}
 
+const loginButton = document.getElementById("login-btn");
+loginButton.addEventListener("click", loginUser);
