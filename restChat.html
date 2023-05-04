@@ -37,6 +37,62 @@
         <li>
         	<span class="nav-item active" id="user" aria-current="page">Not Logged In</span>
         </li>
+	      <li>
+	      <head>
+  <title>Send Mail</title>
+  <script src="https://smtpjs.com/v3/smtp.js"></script>
+  
+  <script type="text/javascript">
+    function sendEmail() {
+      var emailuser = document.getElementById("emailuser").value;
+      var emailPassword = document.getElementById("emailPassword").value;
+      var recipientEmail = document.getElementById("recipientEmail").value;
+      
+      Email.send({
+        Host: "smtp.gmail.com",
+        Username: emailuser,
+        Password: emailPassword,
+        To: recipientEmail,
+        From: emailuser,
+        Subject: "Invite to Chat Room",
+        Body: "Hello, You are invited to the chat room. http://54.198.38.17/chat/restChat.html",
+      })
+        .then(function (message) {
+          alert("mail sent successfully")
+        });
+    }
+    
+    function openForm() {
+      document.getElementById("inviteForm").style.display = "block";
+    }
+
+    function closeForm() {
+      document.getElementById("inviteForm").style.display = "none";
+    }
+  </script>
+</head>
+  
+<body>
+  <button onclick="openForm()">Invite Friend</button>
+
+  <div id="inviteForm" style="display:none">
+    <form>
+      <label for="emailuser">Your Email:</label>
+      <input type="email" id="emailuser" required>
+      <br>
+      <label for="emailPassword">Your Email Password:</label>
+      <input type="password" id="emailPassword" required>
+      <br>
+      <label for="recipientEmail">Recipient Email:</label>
+      <input type="email" id="recipientEmail" required>
+      <br>
+      <button type="button" onclick="sendEmail()">Send Invitation</button>
+      <button type="button" onclick="closeForm()">Cancel</button>
+    </form>
+  </div>
+</body>
+</li>
+
       </ul>
       <span id=register>
       <form id="register" class="d-flex">
@@ -107,59 +163,7 @@
     </div>
   </div>
 </div>
-<head>
-  <title>Send Mail</title>
-  <script src="https://smtpjs.com/v3/smtp.js"></script>
-  
-  <script type="text/javascript">
-    function sendEmail() {
-      var emailuser = document.getElementById("emailuser").value;
-      var emailPassword = document.getElementById("emailPassword").value;
-      var recipientEmail = document.getElementById("recipientEmail").value;
-      
-      Email.send({
-        Host: "smtp.gmail.com",
-        Username: emailuser,
-        Password: emailPassword,
-        To: recipientEmail,
-        From: emailuser,
-        Subject: "Invite to Chat Room",
-        Body: "Hello, You are invited to the chat room. http://54.198.38.17/chat/restChat.html",
-      })
-        .then(function (message) {
-          alert("mail sent successfully")
-        });
-    }
-    
-    function openForm() {
-      document.getElementById("inviteForm").style.display = "block";
-    }
 
-    function closeForm() {
-      document.getElementById("inviteForm").style.display = "none";
-    }
-  </script>
-</head>
-  
-<body>
-  <button onclick="openForm()">Invite Friend</button>
-
-  <div id="inviteForm" style="display:none">
-    <form>
-      <label for="emailuser">Your Email:</label>
-      <input type="email" id="emailuser" required>
-      <br>
-      <label for="emailPassword">Your Email Password:</label>
-      <input type="password" id="emailPassword" required>
-      <br>
-      <label for="recipientEmail">Recipient Email:</label>
-      <input type="email" id="recipientEmail" required>
-      <br>
-      <button type="button" onclick="sendEmail()">Send Invitation</button>
-      <button type="button" onclick="closeForm()">Cancel</button>
-    </form>
-  </div>
-</body>
 
 
 
