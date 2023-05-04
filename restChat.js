@@ -171,22 +171,19 @@ function registerUser() {
       method: 'get'
     })
     .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        // Registration failed due to duplicate username
-        alert(data.error);
-      } else {
-        // Registration successful
-        alert(data.message);
-        myname = name;
-        startsession(name);
-      }
-    })
-    .catch(error => {
-      console.log("Server appears down");
-    });
+.then(data => {
+  if (data.error) {
+    // Registration failed due to duplicate username
+    alert(data.error);
+  } else {
+    // Registration successful
+    alert(data.message);
+    startsession(myname);
   }
-}
+})
+.catch(error => {
+  console.log("Server appears down");
+});
 
 
 
