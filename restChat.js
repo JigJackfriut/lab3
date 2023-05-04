@@ -84,14 +84,21 @@ function completeFetch(result) {
 
 /* Check for new messaged */
 function fetchMessage() {
-	fetch(baseUrl+'/chat/fetch/'+myname, {
-        method: 'get'
-    })
-    .then (response => response.json() )
-    .then (data =>completeFetch(data))
-    .catch(error => {
-        {console.log("Server appears down");}
-    })  	
+  fetch(baseUrl+'/chat/fetch/'+myname, {
+    method: 'get'
+  })
+  .then (response => response.json() )
+  .then (data => {
+    // If the button is checked, call completeFetchDispa(), otherwise call completeFetch()
+    if (document.getElementById('disappearButton').checked) {
+      completeFetchDi(data);
+    } else {
+      completeFetch(data);
+    }
+  })
+  .catch(error => {
+    console.log("Server appears down");
+  }) 
 }
 
 
@@ -262,3 +269,34 @@ function updateUsers(result) {
 	//console.log("user list printed");
 	document.getElementById('members').innerHTML = userList;
 }
+
+
+
+
+function completeFetchDi(result) {
+  // Messages
+  messages = result["messages"];
+  messages.forEach(function(m, i) {
+    name = m['user'];
+    message = m['message'];
+    var messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+    messageElement.innerHTML = "<font color='red'>" + name + ": </font>" + message;
+    document.getElementById('chatBox').appendChild(messageElement);
+
+    // Set a timeout to remove the message after 30 seconds
+    setTimeout(function() {
+      messageElement.remove();
+    }, 10000);
+  });
+
+  // Users
+  users = result["userList"];
+  users.forEach(function(m, i) {
+    name = m['user'] + ", ";
+    if (masterUsers.includes(name) == false) {
+      masterUsers.push(name);
+    }
+  });
+}
+ 
