@@ -143,22 +143,18 @@ function leaveSession(){
 	clearInterval(intervalId);
 	clearInterval(inthandleUsers);
 	document.body.style.backgroundColor = "white";
+	logout()
 }
 
 function logout() {
 	fetch(baseUrl+'/chat/logout/'+myname, {
 		method: 'get'
 	})
-	.then (response => response.json() )
-	.then (data => completeLogout(data) )
 	.catch(error => {
 		{console.log("Service Unavailable");}
 	})
 }
 
-function completeLogout(user) {
-	removeUser(user);
-}
 
 
 // I wrote code for registration
