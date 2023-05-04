@@ -163,27 +163,30 @@ function registerUser() {
     alert("Password must be at least 6 characters long");
     return;
   } else {
-	  myname=name;
-	  myemail=email;
-	  mypass=password;
+    myname = name;
+    myemail = email;
+    mypass = password;
+
     // Send user credentials to server for registration
     fetch(baseUrl+'/chat/register/'+myname+'/'+myemail+'/'+mypass, {
       method: 'get'
     })
     .then(response => response.json())
-.then(data => {
-  if (data.error) {
-    // Registration failed due to duplicate username
-    alert(data.error);
-  } else {
-    // Registration successful
-    alert(data.message);
-    startSession(myname);
+    .then(data => {
+      if (data.error) {
+        // Registration failed due to duplicate username
+        alert(data.error);
+      } else {
+        // Registration successful
+        alert(data.message);
+        startSession(myname);
+      }
+    })
+    .catch(error => {
+      console.log("Server appears down");
+    });
   }
-})
-.catch(error => {
-  console.log("Server appears down");
-});
+}
 
 
 
