@@ -88,7 +88,7 @@ svr.Get(R"(/chat/register/(.*)/(.*)/(.*))", [&](const Request& req, Response& re
     res.set_header("Access-Control-Allow-Origin","*");
     cout<<"hello";
     std::string name = req.matches[1];
-    std::string password = req.matches[3];
+    std::string password = req.matches[2];
 
     // Check if the username is already taken
     if (userCredentials.count(name) && userCredentials[name] == password) {
