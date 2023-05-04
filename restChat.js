@@ -135,6 +135,8 @@ function leaveSession(){
     document.getElementById('members').style.display = 'none';
     document.getElementById('status').style.display = 'none';
     document.getElementById('leave').style.display = 'none';
+	 document.getElementById('disap').style.display = 'none';
+    document.getElementById('invitebutton').style.display = 'none';
 	clearInterval(inthandle);
 	//clearInterval(inthandleUsers);
 }
