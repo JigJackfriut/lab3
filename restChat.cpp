@@ -11,6 +11,7 @@
 #include <algorithm>
 #include "httplib.h"
 
+
 using namespace httplib;
 using namespace std;
 
@@ -40,6 +41,38 @@ string getMessagesJSON(string username, map<string,vector<string>> &messageMap) 
 	return result;
 }
 
+
+
+
+void handle_register(const Request& req, Response& res) {
+  // Extract the user credentials from the request URL parameters
+  string name = req.get_param_value("name");
+  string email = req.get_param_value("email");
+  string password = req.get_param_value("password");
+
+  // Validate the user credentials
+  if (name.empty() || email.empty() || password.empty()) {
+    res.status = 400;
+    res.set_content("{\"error\":\"Please fill out all fields\"}", "application/json");
+    return;
+  } else if (credentials.count(email) > 0) {
+    res.status = 400;
+    res.set_content("{\"error\":\"Email address already registered\"}", "application/json");
+    return;
+  } else if (password.length() < 6) {
+    res.status = 400;
+    res.set_content("{\"error\":\"Password must be at least 6 characters long\"}", "application/json");
+    return;
+  }
+
+  // Store the user credentials in memory
+  credentials[email] = password;
+
+  // Send the response
+  res.set_content("{\"status\":\"success\"}", "application/json");
+}
+
+
 int main(void) {
   Server svr;
   int nextUser=0;
@@ -53,7 +86,9 @@ int main(void) {
   });
 
 
-  
+  svr.Get("/chat/register/:name/:email/:password", [&](const Request& req, Response& res) {
+    handle_register(req, res);
+  });
 
    svr.Get(R"(/chat/send/(.*)/(.*))", [&](const Request& req, Response& res) {
     res.set_header("Access-Control-Allow-Origin","*");
