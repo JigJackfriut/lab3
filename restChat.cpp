@@ -131,6 +131,22 @@ svr.Get(R"(/chat/register/(.*)/(.*)/(.*))", [&](const Request& req, Response& re
  
   });
   
+svr.Get("/chat/fetch/list", [&](const Request& req, Response& res) {
+    res.set_header("Access-Control-Allow-Origin","*");
+    string resultJSON = "{\"users\":[";
+    bool first = true;
+    for (const auto& pair : userCredentials) {
+        if (!first) resultJSON += ",";
+        resultJSON += "\"" + pair.first + "\"";
+        first = false;
+    }
+    resultJSON += "]}";
+    res.set_content(resultJSON, "text/json");
+});
+	
+	
+	
+	
   cout << "Server listening on port " << port << endl;
   svr.listen("0.0.0.0", port);
 
