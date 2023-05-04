@@ -120,19 +120,17 @@ svr.Get(R"(/chat/send/(.*)/(.*))", [&](const Request& req, Response& res) {
  
   });
   
-svr.Get("/chat/fetch/list", [&](const Request& req, Response& res) {
+   svr.Get(R"(/chat/list)", [&](const Request& req, Response& res) {
     res.set_header("Access-Control-Allow-Origin","*");
-    string resultJSON = "{\"users\":[";
-    bool first = true;
-    for (const auto& pair : userCredentials) {
-        if (!first) resultJSON += ",";
-        resultJSON += "\"" + pair.first + "\"";
-        first = false;
+	string result;
+	string usernameList = "Users: ";
+    for (auto const &pair:userCredentials ) {
+		usernameList += pair.first;
+		usernameList += ", ";
     }
-    resultJSON += "]}";
-    res.set_content(resultJSON, "text/json");
-});
-	
+	string jsonMessage = "{\"userList\":\""+usernameList+"\"}";
+	res.set_content(jsonMessage, "text/json");
+  });
 	
 	
 	
