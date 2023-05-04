@@ -160,14 +160,15 @@ function registerUser() {
   } else if (password.length < 6) {
     alert("Password must be at least 6 characters long");
     return;
-  } else if (checkIfUsernameExists(name)) {
-    alert("Username already exists");
-    return;
   } else {
     // Save user credentials to localStorage
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    users.push({ name, password });
-    localStorage.setItem("users", JSON.stringify(users));
+    fetch(baseUrl+'/chat/register/'+name+'/'+email+'/'+password, {
+        method: 'get'
+    })
+    .then (response => response.json() )
+    .catch(error => {
+        {console.log("Server appears down");}
+    })  
 
     alert("Registration successful!");
 	  myname=name;
@@ -175,11 +176,7 @@ function registerUser() {
   }
 }
 
-function checkIfUsernameExists(username) {
-  // Check if username exists in localStorage
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-  return users.some(user => user.name === username);
-}
+
 
 // Attach the registerUser function to the form submit button
 const submitButton = document.getElementById("saveChangesButton");
