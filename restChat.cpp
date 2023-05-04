@@ -14,6 +14,7 @@
 
 using namespace httplib;
 using namespace std;
+map<string, string> credentials;
 
 const int port = 5005;
 
