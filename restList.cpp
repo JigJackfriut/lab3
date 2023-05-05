@@ -4,11 +4,11 @@
 #include <map>
 
 #include "httplib.h"
-#include "chatDB.h"
-#include "chatEntry.h"
+#include "restDB.h"
+#include "restEntry.h"
 
 int main() {
-  chatDB cdb;
+  restDB cdb;
   
   vector<chatEntry> results;
 
