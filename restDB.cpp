@@ -6,7 +6,7 @@
 
 
 
-chatDB::chatDB() {
+restDB::restDB() {
   	// Instantiate Driver
   	driver = sql::mariadb::get_driver_instance();
   	
@@ -34,9 +34,9 @@ chatDB::chatDB() {
    	
 }
 
-vector<chatEntry> chatDB::find(string search) {
+vector<restEntry> restDB::find(string search) {
 
-	vector<chatEntry> list;
+	vector<restEntry> list;
     
     // Make sure the connection is still valid
     if (!conn) {
@@ -48,12 +48,12 @@ vector<chatEntry> chatDB::find(string search) {
     
     // Execute query
     sql::ResultSet *res = stmnt->executeQuery(
-			"SELECT * FROM chat WHERE user like '%"+search+"%' OR "+
+			"SELECT * FROM rest WHERE user like '%"+search+"%' OR "+
     		 + "pass like '%"+search+"%'");
     
     // Loop through and print results
     while (res->next()) {
-    	chatEntry entry(res->getString("ID"),res->getString("user"),
+    	restEntry entry(res->getString("ID"),res->getString("user"),
 			res->getString("email"),res->getString("pass"));
 	    list.push_back(entry);
 
@@ -63,8 +63,8 @@ vector<chatEntry> chatDB::find(string search) {
 }
 
 //Get entries for given username
-vector<chatEntry> chatDB::getUserEntries(string username) {
-    vector<chatEntry> entries;
+vector<restEntry> restDB::getUserEntries(string username) {
+    vector<restEntry> entries;
     
     // Make sure the connection is still valid
     if (!conn) {
@@ -73,15 +73,15 @@ vector<chatEntry> chatDB::getUserEntries(string username) {
     }
 
     // Create a new statement
-    std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("SELECT * FROM chat WHERE user = ?"));
+    std::unique_ptr<sql::PreparedStatement> stmnt(conn->prepareStatement("SELECT * FROM rest WHERE user = ?"));
     stmnt->setString(1, username);
 
     // Execute query
     sql::ResultSet *res = stmnt->executeQuery();
 
-    // Loop through and add chat entries
+    // Loop through and add rest entries
     while (res->next()) {
-        chatEntry entry(res->getString("ID"), res->getString("user"), res->getString("email"), res->getString("pass"));
+        restEntry entry(res->getString("ID"), res->getString("user"), res->getString("email"), res->getString("pass"));
         entries.push_back(entry);
     }
 
@@ -89,7 +89,7 @@ vector<chatEntry> chatDB::getUserEntries(string username) {
 }
 
 
-void chatDB::addEntry(string user,string email,string pass){
+void DB::addEntry(string user,string email,string pass){
 
 	if (!conn) {
    		cerr << "Invalid database connection" << endl;
@@ -98,5 +98,5 @@ void chatDB::addEntry(string user,string email,string pass){
 
   	std::auto_ptr<sql::Statement> stmnt(conn->createStatement());
 
-  	stmnt->executeQuery("INSERT INTO chat(user,email,pass) VALUES ('"+user+"','"+email+"','"+pass+"')");
+  	stmnt->executeQuery("INSERT INTO rest(user,email,pass) VALUES ('"+user+"','"+email+"','"+pass+"')");
 }
