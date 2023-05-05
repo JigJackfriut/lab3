@@ -13,8 +13,8 @@
 #include "httplib.h"
 #include <vector>
 
-#include "chatDB.h"
-#include "chatEntry.h"
+#include "restDB.h"
+#include "restEntry.h"
 
 using namespace httplib;
 using namespace std;
