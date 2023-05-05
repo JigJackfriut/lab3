@@ -13,7 +13,7 @@
 #ifndef USERDB_H
 #define USERDB_H
 
-#define DB_URL "jdbc:mariadb://localhost:3306/chat"
+#define DB_URL "jdbc:mariadb://localhost:3306/rest"
 #define USER "root"
 #define PASS "newpassword"
 
@@ -22,9 +22,9 @@ using namespace std;
 class restDB {
 public:
     restDB();
-    vector<chatEntry> find(string search);
-    vector<chatEntry> getUserEntries(string username);
-    chatEntry fetchEntry(string idnum);
+    vector<restEntry> find(string search);
+    vector<restEntry> getUserEntries(string username);
+    restEntry fetchEntry(string idnum);
     void addEntry(string user, string email, string pass);
     void editEntry(string idnum, string user,string email,string pass);
     void deleteEntry(string idnum);
@@ -38,4 +38,4 @@ private:
 
 };
 
-#endif /* CHATDB_H */
+#endif /* RESTDB_H */
