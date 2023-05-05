@@ -1,8 +1,8 @@
 #include <vector>
 #include <iostream>
 #include <mariadb/conncpp.hpp>
-#include "chatDB.h"
-#include "chatEntry.h"
+#include "restDB.h"
+#include "restEntry.h"
 
 
 
