@@ -21,4 +21,4 @@ private:
 
 };
 
-#endif /* CHATENTRY_H */
+#endif /* RESTENTRY_H */
