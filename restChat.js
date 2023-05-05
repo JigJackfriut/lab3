@@ -1,45 +1,133 @@
 // Rest based chat client
-// Jim Skon 2022
+// Jim Skon 2023
 // Kenyon College
 
-var baseUrl = 'http://54.198.38.17:5005';
+var baseUrl = 'http://3.128.197.4:5005';
 var state="off";
 var myname="";
-var mypass="";
-var myemail="";
 var inthandle;
-var inthandleUsers;
-var currentUsers = [];
-var masterUsers = [];
+var mostRecentChatBox =""; 
+
+//creating an array for current users 
+const currentUsers = []; 
 
 /* Start with text input and status hidden */
 document.getElementById('chatinput').style.display = 'none';
 document.getElementById('status').style.display = 'none';
 document.getElementById('leave').style.display = 'none';
-document.getElementById('disap').style.display = 'none';
-document.getElementById('invitebutton').style.display = 'none';
-
-
-// Action if they push the leave button
-document.getElementById('leave-btn').addEventListener("click", (e) => {
-	leaveSession();
+// Action if they push the join button
+document.getElementById('login-btn').addEventListener("click", (e) => {
+	join();
 })
+
+/* Set up buttons */
+document.getElementById('leave-btn').addEventListener("click", leaveSession);
 document.getElementById('send-btn').addEventListener("click", sendText);
-// Action if they push enter on message box
+document.getElementById('saveChanges').addEventListener("click",registerUser);
+
+
+// Watch for enter on message box
 document.getElementById('message').addEventListener("keydown", (e)=> {
     if (e.code == "Enter") {
-	e.preventDefault();
-    	sendText();
-    	document.getElementById('message').value = "";
-    	return false;
+	sendText();
     }   
 });
-
 
 
 // Call function on page exit
 window.onbeforeunload = leaveSession;
 
+var globalVarToken = "";
+
+function completeJoin(results) {
+    var status = results['status'];
+	//console.log(results);
+	
+    if (status != "success") {
+        alert("Incorrect Username/Pass! Register if you haven't already");
+        leaveSession();
+        return;
+    }
+	
+    var user = results['user'];
+    var token = results['token']; //to extract the token and make it global for use later in username authentication
+    globalVarToken=token;
+	console.log(globalVarToken);
+   // console.log(user+"joins");
+    /*fetchUsers();*/
+    inthandle=setInterval(fetchUsers,500);   /*to check for new users every 500ms*/
+    startSession(user);
+}
+
+
+/* Check for new users */	
+function fetchUsers() {
+	fetch(baseUrl+'/chat/users', {
+        method: 'get'
+    })
+    .then (response => response.json() )
+    .then (data =>updateUser(data))
+    .catch(error => {
+        {alert("Error: Something went wrong:"+error);}
+    })
+}
+
+/*Dynamically update the user list*/
+function updateUser(result) {
+  var currentUsers = result["users"];
+  
+  document.getElementById('members').innerHTML="";
+  document.getElementById('members').innerHTML = currentUsers.toString();
+}
+	
+
+
+function join() {
+	myname = document.getElementById('yourname').value;
+	mypass = document.getElementById('yourpass').value;
+	fetch(baseUrl+'/chat/join/'+myname+'/'+mypass, {
+        method: 'get'
+    })
+    .then (response => response.json() )
+    .then (data =>completeJoin(data))
+    .catch(error => {
+        {alert("Error: Something went wrong:"+error);}
+    });
+}
+
+
+
+/*For registration*/
+function registerUser() {
+	console.log("This function is being called")
+	username = document.getElementById('orangeForm-name').value;
+	email = document.getElementById('orangeForm-email').value;
+	password = document.getElementById('orangeForm-pass').value;
+	fetch(baseUrl+'/chat/register/'+username+'/'+email+'/'+password, {
+		method: 'get'
+	})
+	.then (response => response.json() )
+    	.then (data =>completeRegister(data))
+    	.catch(error => {
+        {alert("Error: Something went wrong:"+error);}
+    });
+}
+
+function completeRegister(results) {
+	var status = results['status'];
+	console.log(status);
+	if (status =="registrationfailure"){
+		alert("Username/Email unavailable. Make sure the password is more than 6 characters");
+		leaveSession();
+		return;
+	}
+	var user = results['user'];
+	alert("Success");
+	username=document.getElementById('orangeForm-name').value='';
+	email=document.getElementById('orangeForm-email').value='';
+	password=document.getElementById('orangeForm-pass').value='';
+}
+	
 
 
 
@@ -55,202 +143,190 @@ function completeSend(results) {
 //function called on submit or enter on text input
 function sendText() {
     var message = document.getElementById('message').value;
+    document.getElementById('message').value = "";
     console.log("Send: "+myname+":"+message);
+	fetch(baseUrl+'/chat/send/'+globalVarToken+'/'+message, { //token auth add
+        method: 'get'
+    })
+    .then (response => response.json() )
+    .then (data =>completeSend(data))
+    .catch(error => {
+        {alert("Error: Something went wrong:"+error);}
+    })    
+
+}
+
+/*
+function completeDisappSend(results_dis){
+		var status = results['status'];
+	if (status == "success") {
+		console.log("Disappearing Send succeeded")
+	} else {
+		alert("Error sending message!");
+	}
+}
+
+
+//function called on submitting as disappearing message
+function disappearingSend(){{
+	   var message = document.getElementById('message').value;
+    console.log("Send as disappearing: "+myname+":"+message);
 	fetch(baseUrl+'/chat/send/'+myname+'/'+message, {
         method: 'get'
     })
     .then (response => response.json() )
-    .then (data => completeSend(data))
-      
-	document.getElementById('message').value = "";
+    .then (data =>completeDisappSend(data))
+    .catch(error => {
+        {alert("Error: Something went wrong:"+error);}
+    })  
 }
+*/
+
+
 
 function completeFetch(result) {
-	// Messages
 	messages = result["messages"];
+	
+	//pushing a new user to the current user array
+	
+	
+	/*currentUsers.indexOf(messages[0].user) === -1? currentUsers.push(messages[0].user) : console.log("This item already exists"); 
+	//currentUsers.push(messages[0].user); 
+	
+	//printing the array to dev tools
+	//console.log(currentUsers); 
+	
+	
+	var chatMembers = "<font color='blue'>" + currentUsers + ", </font>";
+		document.getElementById('members').innerHTML=""; 
+		document.getElementById('members').innerHTML +=
+	    	chatMembers; */
+	    	
+	    	
+	//with _dm for disappearing message	
 	messages.forEach(function (m,i) {
 		name = m['user'];
 		message = m['message'];
+		console.log(message); 
+		var disAppBool = message.substr(-3);
+		console.log(disAppBool); 
+		
+		if (disAppBool === "_dm"){
+		var chatBoxMsgs = "<font color='red'>" + name + ": </font>" + message + "<br />";
+		mostRecentChatBox = mostRecentChatBox + chatBoxMsgs; 
+		console.log(mostRecentChatBox); 
 		document.getElementById('chatBox').innerHTML +=
-	    	"<font color='red'>" + name + ": </font>" + message + "<br />";
-	});
-	// Users
-	users = result["userList"];
-	users.forEach(function (m,i) {
-		name = m['user'] + ", ";
-		if (masterUsers.includes(name) == false) {
-			masterUsers.push(name);
-		}
-	});
+	    	chatBoxMsgs;  
+	    	setTimeout(() => {
+	  		var start = mostRecentChatBox.indexOf(chatBoxMsgs); 
+	  		console.log(start); 
+	  		var end = start+chatBoxMsgs.length; 
+	  		var previousChatBox = mostRecentChatBox.substring(0, start)+mostRecentChatBox.substring(end);
+	  		mostRecentChatBox = previousChatBox; 
+	  		document.getElementById('chatBox').innerHTML =""; 
+	  		document.getElementById('chatBox').innerHTML +=
+	    	previousChatBox;    
+	    	}, 3000); 
+	    
+		} else {
+		var chatBoxMsgs = "<font color='red'>" + name + ": </font>" + message + "<br />";
+		mostRecentChatBox = mostRecentChatBox + chatBoxMsgs; 
+		console.log(mostRecentChatBox); 
+		document.getElementById('chatBox').innerHTML +=
+	    	chatBoxMsgs;     
+	    
+	    }	
+	})
 }
+	
 
-/* Check for new messaged */
+
+/* Check for new messages */
 function fetchMessage() {
-  fetch(baseUrl+'/chat/fetch/'+myname, {
-    method: 'get'
-  })
-  .then (response => response.json() )
-  .then (data => {
-    // If the button is checked, call completeFetchDispa(), otherwise call completeFetch()
-    if (document.getElementById('disappearButton').checked) {
-      completeFetchDi(data);
-    } else {
-      completeFetch(data);
-    }
-  })
-  .catch(error => {
-    console.log("Server appears down");
-  }) 
+	fetch(baseUrl+'/chat/fetch/'+myname, {
+        method: 'get'
+    })
+    .then (response => response.json() )
+    .then (data =>completeFetch(data))
+    .catch(error => {
+        {console.log("Server appears down");}
+    })  
+   
+	
+
+	
+    	
 }
-
-
-
-
-
 /* Functions to set up visibility of sections of the display */
 function startSession(name){
     state="on";
+    
     document.getElementById('yourname').value = "";
     document.getElementById('register').style.display = 'none';
     document.getElementById('user').innerHTML = "User: " + name;
     document.getElementById('chatinput').style.display = 'block';
     document.getElementById('status').style.display = 'block';
-    document.getElementById('leave').style.display = 'block';
-    document.getElementById('members').innerHTML = name;
-    document.getElementById('disap').style.display = 'block';
-    document.getElementById('invitebutton').style.display = 'block';
+    document.getElementById('leave').style.display = 'block';        
     /* Check for messages every 500 ms */
     inthandle=setInterval(fetchMessage,500);
-    /* Check for current users every 500 ms */
-    inthandleUsers=setInterval(allUsers,500);
-	intervalId=setInterval(changeBackgroundColor, 3000);
 }
 
 function leaveSession(){
+    fetch(baseUrl+'/chat/users/remove/'+myname, {
+        method: 'get'
+    })
     state="off";
-    logout();
     document.getElementById('yourname').value = "";
     document.getElementById('register').style.display = 'block';
     document.getElementById('user').innerHTML = "";
     document.getElementById('chatinput').style.display = 'none';
-    document.getElementById('members').style.display = 'none';
     document.getElementById('status').style.display = 'none';
     document.getElementById('leave').style.display = 'none';
-	 document.getElementById('disap').style.display = 'none';
-    document.getElementById('invitebutton').style.display = 'none';
-	
 	clearInterval(inthandle);
-	clearInterval(intervalId);
-	clearInterval(inthandleUsers);
-	document.body.style.backgroundColor = "white";
-	logout()
 }
 
-function logout() {
-	fetch(baseUrl+'/chat/logout/'+myname, {
-		method: 'get'
+
+
+//To register a user
+
+/*
+//Listening for the "Submit Registration Details" button click
+document.getElementById('submitRegisDetails').addEventListener("click", registerDetails)
+
+function registerDetails(){
+	//console.log("the button has been pressed now")
+	
+	//getting the registration details
+	username = document.getElementById('regisUserName').value; 
+	email = document.getElementById('regisEmailAddress').value; 
+	password = document.getElementById('regisPassword').value;
+	
+	fetch(baseUrl+'chat/register/'+username+'/'+email+'/'+password,{
+	method: 'get'
 	})
+	.then (response => response.json())
+	.then (data => checkRegistration(data))
 	.catch(error => {
-		{console.log("Service Unavailable");}
+		{alert("Error: Registration failed! Something went wrong");}
 	})
+} 
+
+function checkRegistration(results){
+	var status = results['status']; 
+	
+	if (status != "success"){
+		alert("Registration Error! Username or Email already exists / Check password length");
+		leaveSession(); 
+		return; 
+	}
+	var currentUser = results['user'];
+	alert("You are successfully registered"); 
+	
+	username = document.getElementById('regisUserName').value = ''; 
+	email = document.getElementById('regisEmailAddress').value = ''; 
+	password = document.getElementById('regisPassword').value = '';
 }
-
-
-
-// I wrote code for registration
-
-// Define a function to handle registration form submission
-
-
-function registerUser() { 
-  // Get the form input values
-  const name = document.getElementById("orangeForm-name").value;
-  const email = document.getElementById("orangeForm-email").value;
-  const password = document.getElementById("orangeForm-pass").value;
-
-  // Validate the input
-  if (!name || !email || !password) {
-    alert("Please fill out all fields");
-    return;
-  } else if (password.length < 6) {
-    alert("Password must be at least 6 characters long");
-    return;
-  } else {
-    myname = name;
-    myemail = email;
-    mypass = password;
-
-    // Send user credentials to server for registration
-    fetch(baseUrl+'/chat/register/'+myname+'/'+myemail+'/'+mypass, {
-      method: 'get'
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        // Registration failed due to duplicate username
-        alert(data.error);
-      } else {
-        // Registration successful
-        alert(data.message);
-        startSession(myname);
-      }
-    })
-    .catch(error => {
-      console.log("Server appears down");
-    });
-  }
-}
-
-
-
-
-// Attach the registerUser function to the form submit button
-const submitButton = document.getElementById("saveChangesButton");
-submitButton.addEventListener("click", registerUser);
-
-// login stuff
-
-
-
-function loginUser() { 
-  // Get the form input values
-  const name = document.getElementById("yourname").value;
-  const password = document.getElementById("yourpass").value;
-
-  // Validate the input
-  if (!name || !password) {
-    alert("Please fill out all fields");
-    return;
-  } else if (password.length < 6) {
-    alert("Password must be at least 6 characters long");
-    return;
-  } else {
-    myname = name;
-    mypass = password;
-
-    // Send user credentials to server for registration
-    fetch(baseUrl+'/chat/login/'+myname+'/'+mypass, {
-      method: 'get'
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-         alert(data.error);
-	     return;
-      } else {
-        // Registration successful
-        alert(data.message);
-        startSession(myname);
-      }
-    })
-    .catch(error => {
-      console.log("Server appears down");
-    });
-  }
-}
-
-const loginButton = document.getElementById("login-btn");
-loginButton.addEventListener("click", loginUser);
+*/
 
 
 
@@ -260,52 +336,16 @@ loginButton.addEventListener("click", loginUser);
 
 
 
-function allUsers() {
-	fetch(baseUrl+'/chat/list', {
-        method: 'get'
-    })
-    .then (response => response.json() )
-    .then (data =>updateUsers(data))
-    .catch(error => {
-        {alert("Error: Something went wrong:"+error);}
-    })
-}
-function updateUsers(result) {
-	userList = result["userList"];
-	//console.log("user list printed");
-	document.getElementById('members').innerHTML = userList;
-}
 
 
 
 
-function completeFetchDi(result) {
-  // Messages
-  messages = result["messages"];
-  messages.forEach(function(m, i) {
-    name = m['user'];
-    message = m['message'];
-    var messageElement = document.createElement('div');
-    messageElement.classList.add('message');
-    messageElement.innerHTML = "<font color='red'>" + name + ": </font>" + message;
-    document.getElementById('chatBox').appendChild(messageElement);
 
-    // Set a timeout to remove the message after 30 seconds
-    setTimeout(function() {
-      messageElement.remove();
-    }, 5000);
-  });
 
-  // Users
-  users = result["userList"];
-  users.forEach(function(m, i) {
-    name = m['user'] + ", ";
-    if (masterUsers.includes(name) == false) {
-      masterUsers.push(name);
-    }
-  });
-}
- 
+
+
+
+
 
 // change background fun?!!!
 
