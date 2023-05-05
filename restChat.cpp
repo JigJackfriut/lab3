@@ -52,7 +52,7 @@ void addUser(string username, string password, string email, map<string,string> 
 	string user=username, pass=password;
 	
 	//added so that the database table is updated whenever someone successfully registers
-	/*chatDB cDB;
+	/*restDB cDB;
 	cDB.addEntry(user,email,pass);*/
 }
 
@@ -74,7 +74,7 @@ string getMessagesJSON(string username, map<string,vector<string>> &messageMap) 
 
 
 int main(void) {
- chatDB cDB;
+ restDB cDB;
  
  Server svr;
 
@@ -87,7 +87,7 @@ int main(void) {
  /* "/" just returnsAPI name */
  svr.Get("/", [](const Request & /*req*/, Response &res) {
  res.set_header("Access-Control-Allow-Origin","*");
- res.set_content("Chat API", "text/plain");
+ res.set_content("Rest API", "text/plain");
  });
 
 
@@ -101,7 +101,7 @@ int main(void) {
  	string result;
  	vector<string> empty;
 
-	 vector<chatEntry> entries = cDB.getUserEntries(username);
+	 vector<restEntry> entries = cDB.getUserEntries(username);
 bool usernameExists = false;
 for (const auto& entry : entries) {
     if (entry.user == username) {
@@ -115,7 +115,7 @@ for (const auto& entry : entries) {
  } else {
  messageMap[username]= empty;
 	userEmail[username] = email;
-	chatDB cDB;
+	restDB cDB;
 	string user=username; string pass=password;
 	cDB.addEntry(user,email,pass);
 	addUser(username , password, email , userMap);
@@ -124,7 +124,7 @@ for (const auto& entry : entries) {
 	
 
 
-/*vector<chatEntry> entries = cDB.getUserEntries(username);
+/*vector<restEntry> entries = cDB.getUserEntries(username);
 bool usernameExists = false;
 for (const auto& entry : entries) {
     if (entry.user == username) {
@@ -150,7 +150,7 @@ if (usernameExists) {
 	string password = req.matches[2];
 	//string userDetails= "{\"user\":\""+username+"\",\"pass\":\""+password+"\"}";
 	//cout<<userDetails;
-	vector<chatEntry> entries = cDB.getUserEntries(username);       
+	vector<restEntry> entries = cDB.getUserEntries(username);       
 	    //cout << "User: " << entries[0].user << endl;
 	    //cout << "Password: " << entries[0].pass << endl;
 
@@ -178,7 +178,7 @@ svr.Get(R"(/chat/join/(.*)/(.*))", [&](const Request& req, Response& res) {
 
     string result;
     // Check if user with this name and password exists
-    vector<chatEntry> entries = cDB.getUserEntries(username);
+    vector<restEntry> entries = cDB.getUserEntries(username);
     if (entries.empty() || username != entries[0].user || password != entries[0].pass) {
         result = "{\"status\":\"failure\"}";
     } else {
