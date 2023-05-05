@@ -1,16 +1,16 @@
-#include "chatEntry.h"
+#include "restEntry.h"
 
-chatEntry::chatEntry() {
+restEntry::restEntry() {
 }
 
-chatEntry::chatEntry(sql::SQLString ID, sql::SQLString user, sql::SQLString email, sql::SQLString pass) {
+restEntry::restEntry(sql::SQLString ID, sql::SQLString user, sql::SQLString email, sql::SQLString pass) {
     this->ID = ID;
     this->user = user;
     this->email = email;
     this->pass = pass;
 }
 
-string chatEntry::text() {
+string restEntry::text() {
 	string result = ID + ". ";
 	result += user + " ";
 	result += email + " ";
@@ -19,7 +19,7 @@ string chatEntry::text() {
 
 }
 
-string chatEntry::json() {
+string restEntry::json() {
 	string result = "{\"ID\":\"" + ID + "\",";
 	result += "\"user\":\"" + user + "\",";
 	result += "\"email\":\"" + email + "\",";
