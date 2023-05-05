@@ -8,14 +8,14 @@
 
 #include <mariadb/conncpp.hpp>
 
-#include "chatEntry.h"
+#include "restEntry.h"
 
 #ifndef USERDB_H
 #define USERDB_H
 
 #define DB_URL "jdbc:mariadb://localhost:3306/chat"
 #define USER "root"
-#define PASS "Altri@@12345"
+#define PASS "newpassword"
 
 using namespace std;
 
