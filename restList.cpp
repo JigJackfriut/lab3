@@ -10,7 +10,7 @@
 int main() {
   restDB cdb;
   
-  vector<chatEntry> results;
+  vector<restEntry> results;
 
   results = cdb.find("");
 
