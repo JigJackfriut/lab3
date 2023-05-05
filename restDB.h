@@ -19,9 +19,9 @@
 
 using namespace std;
 
-class chatDB {
+class restDB {
 public:
-    chatDB();
+    restDB();
     vector<chatEntry> find(string search);
     vector<chatEntry> getUserEntries(string username);
     chatEntry fetchEntry(string idnum);
