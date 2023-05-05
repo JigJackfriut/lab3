@@ -2,13 +2,13 @@
 #include <string>
 using namespace std;
 
-#ifndef CHATENTRY_H
-#define CHATENTRY_H
+#ifndef RESTENTRY_H
+#define RESTENTRY_H
 
-class chatEntry {
+class restEntry {
 public:
-     chatEntry();
-     chatEntry(sql::SQLString ID, sql::SQLString user, sql::SQLString email, sql::SQLString pass);
+     restEntry();
+     restEntry(sql::SQLString ID, sql::SQLString user, sql::SQLString email, sql::SQLString pass);
      string text();
      string json();
      
