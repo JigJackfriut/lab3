@@ -43,24 +43,25 @@ int main(void) {
 svr.Get(R"(/chat/register/(.*)/(.*)/(.*))", [&](const Request& req, Response& res) {
     // Extract the name, email, and password from the request URL
     res.set_header("Access-Control-Allow-Origin","*");
-    cout<<"hello";
     std::string name = req.matches[1];
     std::string email = req.matches[2];
     std::string password = req.matches[3];
 
     // Check if the username is already taken
-    if (userCredentials.count(name)) {
+    restDB rDB;
+    vector<restEntry> results = rDB.find(name);
+    if (results.size() > 0) {
       // Return an error response
       res.set_content("{\"error\":\"Username already taken\"}", "application/json");
     } else {
       // Register the new user
-      userCredentials[name] = password;
-      userCredentialsnow[name]=password;
+      rDB.addEntry(name,email,password);
 
       // Return a success response
       res.set_content("{\"message\":\"User registered successfully\"}", "application/json");
     }
-  });
+});
+
 	
 svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
     res.set_header("Access-Control-Allow-Origin","*");
