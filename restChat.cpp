@@ -28,7 +28,6 @@ const int port = 5005;
 int main(void) {
   Server svr;
   restDB rDB 
-  int nextUser=0;
   map<string,vector<string>> messageMap;
   vector<string> userList;
 	
@@ -62,7 +61,6 @@ svr.Get(R"(/chat/register/(.*)/(.*)/(.*))", [&](const Request& req, Response& re
     }
 });
 
-	
 svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
     res.set_header("Access-Control-Allow-Origin","*");
     std::string name = req.matches[1];
@@ -71,17 +69,17 @@ svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
     // Create a new restDB object
     restDB db;
 
-    // Get user credentials from database
-    vector<restEntry> entries = db.getUserEntries(name);
+    // Get entries for given username
+    vector<restEntry> entries = db.find(name);
 
-    if (entries.size() == 1 && entries[0].getPass() == password) {
-        // Update userCredentialsnow
-        userCredentialsnow[name] = password;
+    // Check if the user exists and the password matches
+    if (entries.size() == 1 && entries[0].pass == password) {
         res.set_content("{\"message\":\"User logged in successfully\"}", "application/json");
     } else {
         res.set_content("{\"error\":\"Invalid username or password\"}", "application/json");
     }
 });
+
 
 	
 
