@@ -27,9 +27,8 @@ const int port = 5005;
 
 int main(void) {
   Server svr;
-  restDB rDB 
-  map<string,vector<string>> messageMap;
-  vector<string> userList;
+  restDB rDB;
+
 	
   /* "/" just returnsAPI name */
   svr.Get("/", [](const Request & /*req*/, Response &res) {
@@ -61,27 +60,7 @@ svr.Get(R"(/chat/register/(.*)/(.*)/(.*))", [&](const Request& req, Response& re
     }
 });
 
-svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
-    res.set_header("Access-Control-Allow-Origin","*");
-    std::string name = req.matches[1];
-    std::string password = req.matches[2];
 
-    // Create a new restDB object
-    restDB db;
-
-    // Get entries for given username
-    vector<restEntry> entries = db.find(name);
-
-    // Check if the user exists and the password matches
-    if (entries.size() == 1 && entries[0].pass == password) {
-        res.set_content("{\"message\":\"User logged in successfully\"}", "application/json");
-    } else {
-        res.set_content("{\"error\":\"Invalid username or password\"}", "application/json");
-    }
-});
-
-
-	
 
 
   cout << "Server listening on port " << port << endl;
