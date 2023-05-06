@@ -92,13 +92,21 @@ svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
     std::string name = req.matches[1];
     std::string password = req.matches[2];
 
-    if (userCredentials.count(name) && userCredentials[name] == password) {
-	userCredentialsnow[name]=password;
+    // Create a new restDB object
+    restDB db;
+
+    // Get user credentials from database
+    vector<restEntry> entries = db.getUserEntries(name);
+
+    if (entries.size() == 1 && entries[0].getPass() == password) {
+        // Update userCredentialsnow
+        userCredentialsnow[name] = password;
         res.set_content("{\"message\":\"User logged in successfully\"}", "application/json");
     } else {
         res.set_content("{\"error\":\"Invalid username or password\"}", "application/json");
     }
 });
+
 	
 
  // Send message endpoint
