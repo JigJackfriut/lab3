@@ -159,7 +159,7 @@ function logout() {
 // Define a function to handle registration form submission
 
 
-function registerUser() { 
+   function registerUser() { 
   // Get the form input values
   const name = document.getElementById("orangeForm-name").value;
   const email = document.getElementById("orangeForm-email").value;
@@ -181,7 +181,12 @@ function registerUser() {
     fetch(baseUrl+'/chat/register/'+myname+'/'+myemail+'/'+mypass, {
       method: 'get'
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      return response.json();
+    })
     .then(data => {
       if (data.error) {
         // Registration failed due to duplicate username
@@ -193,17 +198,16 @@ function registerUser() {
       }
     })
     .catch(error => {
-      console.log("Server appears down");
+      console.log("Registration failed: " + error.message);
+      alert("Registration failed. Please try again later.");
     });
   }
 }
 
-
-
-
 // Attach the registerUser function to the form submit button
 const submitButton = document.getElementById("saveChangesButton");
 submitButton.addEventListener("click", registerUser);
+
 
 // login stuff
 
