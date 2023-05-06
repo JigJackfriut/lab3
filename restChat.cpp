@@ -21,31 +21,6 @@ using namespace std;
 
 const int port = 5005;
 
-void addMessage(string username, string message, map<string,vector<string>> &messageMap) {
-	/* iterate through users adding message to each */
-	string jsonMessage = "{\"user\":\""+username+"\",\"message\":\""+message+"\"}";
-	for (auto userMessagePair : messageMap) {
-		username = userMessagePair.first;
-		messageMap[username].push_back(jsonMessage);
-	}
-}
-
-// Return messages for a certain user
-string getMessagesJSON(string username, map<string,vector<string>> &messageMap) {
-	/* retrieve json list of messages for this user */
-	bool first = true;
-	string result = "{\"messages\":[";
-	for (string message :  messageMap[username]) {
-		if (not first) result += ",";
-		result += message;
-		first = false;
-	}
-	result += "]}";
-	messageMap[username].clear();
-	return result;
-}
-
-
 
 
 
@@ -109,52 +84,7 @@ svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
 
 	
 
- // Send message endpoint
-svr.Get(R"(/chat/send/(.*)/(.*))", [&](const Request& req, Response& res) {
-    res.set_header("Access-Control-Allow-Origin","*");
-    string username = req.matches[1];
-    string message = req.matches[2];
-    string resultMessage;
 
-    if (!userCredentials.count(username)) {
-        resultMessage = "{\"status\":\"baduser\"}";
-    } else {
-        addMessage(username, message, messageMap);
-        resultMessage = "{\"status\":\"success\"}";
-    }
-
-    res.set_content(resultMessage + ",\"user\":\"" + username + "\"}", "application/json");
-});
-  
-   svr.Get(R"(/chat/fetch/(.*))", [&](const Request& req, Response& res) {
-    string username = req.matches[1];
-    res.set_header("Access-Control-Allow-Origin","*");
-    string resultMessageJSON = getMessagesJSON(username,messageMap);
-    res.set_content(resultMessageJSON, "text/json");
- 
-  });
-  
-   svr.Get(R"(/chat/list)", [&](const Request& req, Response& res) {
-    res.set_header("Access-Control-Allow-Origin","*");
-	string result;
-	string usernameList = "Users: ";
-    for (auto const &pair:userCredentialsnow ) {
-		usernameList += pair.first;
-		usernameList += ", ";
-    }
-	string jsonMessage = "{\"userList\":\""+usernameList+"\"}";
-	res.set_content(jsonMessage, "text/json");
-  });
-	
-	
-   svr.Get(R"(/chat/logout/(.*))", [&](const Request& req, Response& res) {
-    
-    res.set_header("Access-Control-Allow-Origin","*");
-	   string username = req.matches[1];
-	   userCredentialsnow.erase(username); 
-  });	
-	
-	
   cout << "Server listening on port " << port << endl;
   svr.listen("0.0.0.0", port);
 
