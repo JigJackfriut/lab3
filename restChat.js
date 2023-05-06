@@ -13,7 +13,6 @@ var currentUsers = [];
 var masterUsers = [];
 
 /* Start with text input and status hidden */
-document.getElementById('chatinput').style.display = 'none';
 document.getElementById('status').style.display = 'none';
 document.getElementById('leave').style.display = 'none';
 document.getElementById('disap').style.display = 'none';
@@ -113,7 +112,6 @@ function startSession(name){
     document.getElementById('yourname').value = "";
     document.getElementById('register').style.display = 'none';
     document.getElementById('user').innerHTML = "User: " + name;
-    document.getElementById('chatinput').style.display = 'block';
     document.getElementById('status').style.display = 'block';
     document.getElementById('leave').style.display = 'block';
     document.getElementById('members').innerHTML = name;
@@ -132,7 +130,6 @@ function leaveSession(){
     document.getElementById('yourname').value = "";
     document.getElementById('register').style.display = 'block';
     document.getElementById('user').innerHTML = "";
-    document.getElementById('chatinput').style.display = 'none';
     document.getElementById('members').style.display = 'none';
     document.getElementById('status').style.display = 'none';
     document.getElementById('leave').style.display = 'none';
