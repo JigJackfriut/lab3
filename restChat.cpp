@@ -149,7 +149,6 @@ svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
 
     string result;
     // Check if user with this name and password exists
-    vector<restEntry> entries = rDB.getUserEntries(username);
     if (entries.empty() || username != entries[0].user || password != entries[0].pass) {
         result = "{\"status\":\"failure\"}";
     } else {
