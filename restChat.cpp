@@ -147,16 +147,16 @@ svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
     restDB rDB;
     vector<restEntry> entries = rDB.getUserEntries(username);
 
-    // Check if any of the entries match the given password
-    for (auto entry : entries) {
-        if (entry.password == password) {
-            // Password matches, return true
-            res.set_content("{\"message\":\"Login successful\"}", "application/json");
+    string result;
+    // Check if user with this name and password exists
+    vector<restEntry> entries = rDB.getUserEntries(username);
+    if (entries.empty() || username != entries[0].user || password != entries[0].pass) {
+        result = "{\"status\":\"failure\"}";
+    } else {
+         res.set_content("{\"message\":\"Login successful\"}", "application/json");
             return;
-        }
     }
 
-    // No matching entry found, return false
     res.set_content("{\"error\":\"Invalid username or password\"}", "application/json");
 });
 
