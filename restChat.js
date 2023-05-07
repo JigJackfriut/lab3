@@ -11,12 +11,14 @@ var inthandle;
 var inthandleUsers;
 var currentUsers = [];
 var masterUsers = [];
+var intervalId;
 
 /* Start with text input and status hidden */
 document.getElementById('status').style.display = 'none';
 document.getElementById('leave').style.display = 'none';
 document.getElementById('disap').style.display = 'none';
 document.getElementById('invitebutton').style.display = 'none';
+document.getElementById('chatBox').innerHTML='';
 
 
 // Action if they push the leave button
@@ -120,7 +122,6 @@ function startSession(name){
     /* Check for messages every 500 ms */
     inthandle=setInterval(fetchMessage,500);
     /* Check for current users every 500 ms */
-    inthandleUsers=setInterval(allUsers,500);
 	intervalId=setInterval(changeBackgroundColor, 3000);
 }
 
