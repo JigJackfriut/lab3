@@ -136,6 +136,7 @@ svr.Get(R"(/chat/register/(.*)/(.*)/(.*))", [&](const Request& req, Response& re
 });
 	
 	//code for login!!!!!!!
+//code for login!!!!!!!
 svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
     // Extract the username and password from the request URL
     res.set_header("Access-Control-Allow-Origin","*");
@@ -144,19 +145,19 @@ svr.Get(R"(/chat/login/(.*)/(.*))", [&](const Request& req, Response& res) {
 
     // Check if the login credentials are valid
     restDB rDB;
-	vector<restEntry> entries = getUserEntries(username);
+    vector<restEntry> entries = rDB.getUserEntries(username);
 
     // Check if any of the entries match the given password
     for (auto entry : entries) {
-        if (entry.getPassword() == password) {
+        if (entry.password == password) {
             // Password matches, return true
-                    res.set_content("{\"message\":\"Login successful\"}", "application/json");
-
+            res.set_content("{\"message\":\"Login successful\"}", "application/json");
+            return;
         }
     }
-        res.set_content("{\"error\":\"Invalid username or password\"}", "application/json");
-    
-   
+
+    // No matching entry found, return false
+    res.set_content("{\"error\":\"Invalid username or password\"}", "application/json");
 });
 
 
